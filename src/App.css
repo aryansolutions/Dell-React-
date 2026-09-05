@@ -21,9 +21,8 @@ section {
 }
 
 button {
-  font-family: inherit
+  font-family: inherit;
 }
-
 
 /* NAV */
 
@@ -36,14 +35,17 @@ button {
   position: fixed;
   top: 0;
   left: 0;
-
   z-index: 999;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 30px;
+  padding: 0 24px;
+
+  border: 0;
+  outline: 0;
+  box-shadow: none;
 }
 
 .logo b {
@@ -63,10 +65,14 @@ button {
 }
 
 
-/* SECTION 1 */
+/* =========================
+   SECTION 1 HERO
+========================= */
 
 .hero {
+  width: 100%;
   height: 100vh;
+
   position: relative;
   overflow: hidden;
 
@@ -75,6 +81,9 @@ button {
   align-items: center;
 
   background: #071c43;
+
+  border: 0;
+  outline: 0;
 }
 
 .heroVideo {
@@ -85,14 +94,16 @@ button {
   height: 100%;
 
   object-fit: cover;
+
+  border: 0;
+  outline: 0;
 }
 
 .heroShade {
   position: absolute;
   inset: 0;
 
-  background:
-    linear-gradient(to bottom,
+  background: linear-gradient(to bottom,
       rgba(4, 20, 50, .02) 20%,
       rgba(4, 20, 50, .12) 50%,
       rgba(4, 25, 60, .65) 80%,
@@ -124,24 +135,19 @@ button {
 
 .heroText h1 {
   color: #092d68;
-
   font-size: clamp(55px, 8vw, 125px);
-
   font-weight: 400;
-
   letter-spacing: -3px;
 }
 
 .heroText p {
   color: #092d68;
-
   font-size: 21px;
-
   margin-top: 4px;
 }
 
 
-/* VIDEO BUTTON */
+/* PLAY PAUSE BUTTON */
 
 .play {
   width: 72px;
@@ -172,7 +178,6 @@ button {
   content: "";
 
   position: absolute;
-
   inset: -7px;
 
   border-radius: 50%;
@@ -184,22 +189,16 @@ button {
 
 .play:hover {
   transform: scale(1.1);
-
   background: rgba(255, 255, 255, .27);
 }
 
 .play:hover:before {
   inset: -11px;
-
   border-color: rgba(255, 255, 255, .35);
 }
 
-
-/* pause icon */
-
 .pauseIcon {
   display: flex;
-
   gap: 6px;
 }
 
@@ -207,13 +206,12 @@ button {
   width: 5px;
   height: 20px;
 
+  display: block;
+
   background: white;
 
   border-radius: 3px;
 }
-
-
-/* play icon */
 
 .playIcon {
   width: 0;
@@ -226,14 +224,10 @@ button {
   margin-left: 4px;
 }
 
-
-/* pulse when video playing */
-
 .isPlaying:after {
   content: "";
 
   position: absolute;
-
   inset: -1px;
 
   border-radius: 50%;
@@ -262,7 +256,7 @@ button {
 }
 
 
-/* scroll arrow */
+/* SCROLL ARROW */
 
 .down {
   position: absolute;
@@ -289,10 +283,11 @@ button {
   50% {
     transform: translate(-50%, 8px);
   }
+
 }
 
 
-/* PRICE */
+/* PRICE CIRCLE */
 
 .price {
   position: absolute;
@@ -344,29 +339,25 @@ button {
 
   0%,
   100% {
-
     box-shadow:
       0 0 0 7px rgba(40, 145, 215, .11),
       0 0 0 15px rgba(40, 145, 215, .04);
-
   }
 
   50% {
-
     box-shadow:
       0 0 0 15px rgba(40, 145, 215, .12),
       0 0 0 30px rgba(40, 145, 215, .02);
-
   }
+
 }
 
 
-/* footer */
+/* FOOTER TEXT */
 
 .copy,
 .terms {
   position: absolute;
-
   bottom: 14px;
 
   color: white;
@@ -377,17 +368,20 @@ button {
 }
 
 .copy {
-  left: 24px
+  left: 24px;
 }
 
 .terms {
-  right: 24px
+  right: 24px;
 }
 
 
-/* SECTION 2 */
+/* =========================
+   SECTION 2 FEATURES
+========================= */
 
 .features {
+  width: 100%;
   height: 100vh;
 
   background: #061a3d;
@@ -399,6 +393,9 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  border: 0;
+  outline: 0;
 }
 
 .cards {
@@ -425,6 +422,9 @@ button {
 
   background: #0c2852;
 
+  border: 0;
+  outline: 0;
+
   transition:
     transform .8s cubic-bezier(.22, 1, .36, 1),
     width .8s cubic-bezier(.22, 1, .36, 1),
@@ -435,8 +435,10 @@ button {
 
 .cardImg {
   position: absolute;
-
   inset: 0;
+
+  width: 100%;
+  height: 100%;
 
   background-size: cover;
   background-position: center;
@@ -447,13 +449,11 @@ button {
 
 .cardShade {
   position: absolute;
-
   inset: 0;
 
   z-index: 2;
 
-  background:
-    linear-gradient(to top,
+  background: linear-gradient(to top,
       rgba(3, 22, 58, .97),
       rgba(3, 22, 58, .7) 30%,
       rgba(3, 22, 58, .05) 74%);
@@ -463,8 +463,7 @@ button {
 /* ACTIVE CARD */
 
 .active {
-  transform:
-    translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) scale(1);
 
   z-index: 10;
 
@@ -472,8 +471,7 @@ button {
 }
 
 .active:hover {
-  transform:
-    translate(-50%, -50%) scale(1.04);
+  transform: translate(-50%, -50%) scale(1.04);
 }
 
 .active:hover .cardImg {
@@ -487,8 +485,7 @@ button {
   width: 81%;
   height: 90%;
 
-  transform:
-    translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 
   z-index: 30;
 }
@@ -502,7 +499,7 @@ button {
 }
 
 
-/* SIDE CARDS */
+/* PREVIOUS CARD */
 
 .prev {
   transform:
@@ -514,6 +511,9 @@ button {
 
   z-index: 2;
 }
+
+
+/* NEXT CARD */
 
 .next {
   transform:
@@ -554,7 +554,7 @@ button {
 }
 
 
-/* card text */
+/* FEATURE TEXT */
 
 .cardText {
   position: absolute;
@@ -573,7 +573,6 @@ button {
 
 .zoom .cardText {
   transform: scale(1.04);
-
   transform-origin: left bottom;
 }
 
@@ -668,17 +667,20 @@ button {
 }
 
 .left {
-  left: 25px
+  left: 25px;
 }
 
 .right {
-  right: 25px
+  right: 25px;
 }
 
 
-/* SECTION 3 */
+/* =========================
+   SECTION 3 PRODUCTS
+========================= */
 
 .products {
+  width: 100%;
   height: 100vh;
 
   position: relative;
@@ -693,13 +695,27 @@ button {
 
   overflow: hidden;
 
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+
   transition:
     background .7s,
     color .7s;
 }
 
+
+/*
+IMPORTANT CHANGE:
+product is now 100% width.
+Spacing is created with padding instead.
+This removes those vertical side lines.
+*/
+
 .product {
-  width: 82%;
+  width: 100%;
+
+  padding: 0 9%;
 
   display: flex;
 
@@ -707,10 +723,28 @@ button {
   justify-content: center;
 
   gap: 80px;
+
+  background: transparent;
+
+  border: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+
+  outline: 0 !important;
+
+  box-shadow: none !important;
+}
+
+.product:before,
+.product:after,
+.products:before,
+.products:after {
+  content: none !important;
+  display: none !important;
 }
 
 
-/* right transition */
+/* RIGHT TRANSITION */
 
 .fromRight {
   animation:
@@ -736,7 +770,7 @@ button {
 }
 
 
-/* left transition */
+/* LEFT TRANSITION */
 
 .fromLeft {
   animation:
@@ -762,7 +796,7 @@ button {
 }
 
 
-/* product image */
+/* PRODUCT IMAGE */
 
 .productImg {
   width: 50%;
@@ -771,6 +805,12 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  background: transparent;
+
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
 
   animation: imageIn .9s ease;
 }
@@ -797,6 +837,9 @@ button {
 
   object-fit: contain;
 
+  border: 0;
+  outline: 0;
+
   filter:
     drop-shadow(0 25px 25px rgba(0, 0, 0, .2));
 
@@ -810,10 +853,16 @@ button {
 }
 
 
-/* product text */
+/* PRODUCT TEXT */
 
 .productText {
   width: 40%;
+
+  background: transparent;
+
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
 
   animation: textIn .8s ease;
 }
@@ -875,8 +924,10 @@ button {
   padding: 17px 0;
 
   border-top: 1px solid currentColor;
-
   border-bottom: 1px solid currentColor;
+
+  border-left: 0;
+  border-right: 0;
 
   font-size: 27px;
 }
@@ -886,6 +937,9 @@ button {
 
   font-size: 20px;
 }
+
+
+/* KNOW MORE */
 
 .know {
   padding: 12px 24px;
@@ -913,7 +967,7 @@ button {
 /* JBL */
 
 .light {
-  background: #dbe9f2;
+  background: #dbe9f2 !important;
 
   color: #061a3d;
 }
@@ -985,7 +1039,9 @@ button {
 }
 
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:768px) {
 
@@ -995,13 +1051,11 @@ button {
 
   .nav {
     height: 58px;
-
     padding: 0 16px;
   }
 
   .heroText h1 {
     font-size: 50px;
-
     letter-spacing: -2px;
   }
 
@@ -1032,7 +1086,6 @@ button {
     height: 96px;
 
     right: 18px;
-
     bottom: 7%;
   }
 
@@ -1089,7 +1142,9 @@ button {
   /* products */
 
   .product {
-    width: 84%;
+    width: 100%;
+
+    padding: 0 8%;
 
     flex-direction: column;
 
@@ -1167,7 +1222,7 @@ button {
 }
 
 
-/* reduced motion */
+/* REDUCED MOTION */
 
 @media(prefers-reduced-motion:reduce) {
 
@@ -1177,20 +1232,4 @@ button {
     scroll-behavior: auto !important;
   }
 
-}
-
-/* remove side lines in product section */
-.products,
-.product {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.products::before,
-.products::after,
-.product::before,
-.product::after {
-  content: none !important;
-  display: none !important;
 }
