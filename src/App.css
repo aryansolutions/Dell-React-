@@ -1178,3 +1178,19 @@ button {
   }
 
 }
+
+/* remove side lines in product section */
+.products,
+.product {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.products::before,
+.products::after,
+.product::before,
+.product::after {
+  content: none !important;
+  display: none !important;
+}
