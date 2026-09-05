@@ -95,7 +95,7 @@ function App() {
       {/* NAV */}
 
       <nav className="nav">
-        <div className="logo"><b>DELLL</b> <small>Technologies</small></div>
+        <div className="logo"><b>DELL</b> <small>Technologies</small></div>
         <a href="#hero">Inspiron</a>
       </nav>
 
