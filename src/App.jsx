@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import ChatAssistant from "./ChatAssistant";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import heroVideo from "./assets/hero_loop.mp4";
@@ -22,27 +23,88 @@ function App() {
   const [dir, setDir] = useState("right");
   const [playing, setPlaying] = useState(true);
 
+  const [products, setProducts] = useState([]);
+
   const video = useRef();
 
+  function selectProduct(productId) {
+
+    const index = products.findIndex(
+      product => product.id === productId
+    );
+
+    if (index === -1) return;
+
+    setDir(index > pi ? "right" : "left");
+
+    setPi(index);
+
+    document
+      .getElementById("products")
+      ?.scrollIntoView({
+        behavior: "smooth"
+      });
+  }
+
   const features = [
-    { title: "Secure and reliable", img: secure, icon: "◈", text: "Designed for dependable and secure everyday computing." },
+    {
+      title: "Secure and reliable",
+      img: secure,
+      icon: "◈",
+      text: "Designed for dependable and secure everyday computing."
+    },
 
-    { title: "New AI experiences", img: ai, icon: "AI", text: "Sleek 14-inch 2-in-1 with on-device Copilot+ powered by Intel Core Ultra processors, with stunning performance that powers the newest AI experiences." },
+    {
+      title: "New AI experiences",
+      img: ai,
+      icon: "AI",
+      text: "Sleek 14-inch 2-in-1 with on-device Copilot+ powered by Intel Core Ultra processors, with stunning performance that powers the newest AI experiences."
+    },
 
-    { title: "Built-in sustainability", img: sustainability, icon: "♻", text: "Designed with sustainability in mind while delivering modern performance." },
+    {
+      title: "Built-in sustainability",
+      img: sustainability,
+      icon: "♻",
+      text: "Designed with sustainability in mind while delivering modern performance."
+    },
 
-    { title: "Powered by four modes", img: modes, icon: "✦", text: "Switch between different modes for work, entertainment and creativity." }
+    {
+      title: "Powered by four modes",
+      img: modes,
+      icon: "✦",
+      text: "Switch between different modes for work, entertainment and creativity."
+    }
   ];
 
-  const products = [
-    { type: "xps", title: "Dell XPS 13", sub: "Starting from", price: "₹53,364", emi: "EMI starting at ₹2,224", img: xps },
+  // local image mapping for API data
 
-    { title: "ACCESSORIES", sub: "Dell 6-in-1 USB-C Multiport Adapter", model: "DA305", price: "₹9,999/-* at ₹1,999/-*", img: da305 },
+  const images = {
+    xps: xps,
+    da305: da305,
+    da326: da326,
+    jbl: jbl
+  };
 
-    { title: "ACCESSORIES", sub: "Dell Pro 7-in-1 USB-C Travel Hub", model: "DA326", price: "₹9,999/-* at ₹1,999/-*", img: da326 },
+  useEffect(() => {
 
-    { type: "offer", title: "SPECIAL OFFERS", sub: "JBL Tune 770NC Headphones worth", price: "₹9,999/-* at ₹1,999/-*", img: jbl }
-  ];
+    const API_URL =
+      import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
+    fetch(`${API_URL}/products`)
+
+      .then(res => res.json())
+
+      .then(data => {
+        console.log("Products from API:", data);
+        setProducts(data);
+      })
+
+      .catch(err => {
+        console.log("API error:", err);
+      });
+
+  }, []);
+
 
   // feature slider
 
@@ -57,47 +119,81 @@ function App() {
   }
 
   function cardClick(i) {
+
     if (i !== fi) {
       setFi(i);
       setZoom(null);
-    } else {
+    }
+
+    else {
       setZoom(zoom === i ? null : i);
     }
   }
 
+
   // product slider
 
   function nextP() {
+
+    if (products.length === 0) return;
+
     setDir("right");
-    setPi((pi + 1) % products.length);
+
+    setPi(
+      (pi + 1) % products.length
+    );
   }
 
   function prevP() {
+
+    if (products.length === 0) return;
+
     setDir("left");
-    setPi((pi - 1 + products.length) % products.length);
+
+    setPi(
+      (pi - 1 + products.length) % products.length
+    );
   }
 
-  // video
+
+  // video play pause
 
   function videoPlay() {
+
     if (!video.current) return;
 
-    if (video.current.paused) video.current.play();
-    else video.current.pause();
+    if (video.current.paused) {
+      video.current.play();
+    }
+
+    else {
+      video.current.pause();
+    }
   }
+
 
   const p = products[pi];
 
+
   return (
-    
     <div className="website">
 
-      {/* NAV */}
+
+      {/* NAVBAR */}
 
       <nav className="nav">
-        <div className="logo"><b>DELL</b> <small>Technologies</small></div>
-        <a href="#hero">Inspiron</a>
+
+        <div className="logo">
+          <b>DELL</b>
+          <small>Technologies</small>
+        </div>
+
+        <a href="#hero">
+          Inspiron
+        </a>
+
       </nav>
+
 
 
       {/* SECTION 1 */}
@@ -112,18 +208,37 @@ function App() {
           loop
           playsInline
           poster={heroImg}
-          onPlay={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
+
+          onPlay={() => {
+            setPlaying(true)
+          }}
+
+          onPause={() => {
+            setPlaying(false)
+          }}
         >
-          <source src={heroVideo} type="video/mp4" />
+
+          <source
+            src={heroVideo}
+            type="video/mp4"
+          />
+
         </video>
+
 
         <div className="heroShade"></div>
 
+
         <div className="heroText">
 
-          <h1>Dell Inspiron</h1>
-          <p>14 Plus 2-in-1 Laptop</p>
+          <h1>
+            Dell Inspiron
+          </h1>
+
+          <p>
+            14 Plus 2-in-1 Laptop
+          </p>
+
 
           <button
             className={`play ${playing ? "isPlaying" : ""}`}
@@ -132,33 +247,54 @@ function App() {
           >
 
             {playing ? (
+
               <span className="pauseIcon">
                 <i></i>
                 <i></i>
               </span>
+
             ) : (
+
               <span className="playIcon"></span>
+
             )}
 
           </button>
 
         </div>
 
+
         <Price />
 
-        <div className="down">↓</div>
 
-        <p className="copy">Copyright © 2025 Dell Inc.</p>
-        <p className="terms">*T&Cs apply</p>
+        <div className="down">
+          ↓
+        </div>
+
+
+        <p className="copy">
+          Copyright © 2025 Dell Inc.
+        </p>
+
+        <p className="terms">
+          *T&Cs apply
+        </p>
 
       </section>
+
 
 
       {/* SECTION 2 */}
 
       <section className="features">
 
-        <button className="arrow left" onClick={prevF}>‹</button>
+        <button
+          className="arrow left"
+          onClick={prevF}
+        >
+          ‹
+        </button>
+
 
         <div className="cards">
 
@@ -166,117 +302,281 @@ function App() {
 
             let pos = "hide";
 
-            if (i === fi) pos = "active";
-            else if (i === (fi - 1 + features.length) % features.length) pos = "prev";
-            else if (i === (fi + 1) % features.length) pos = "next";
+            if (i === fi) {
+              pos = "active";
+            }
+
+            else if (
+              i === (fi - 1 + features.length) % features.length
+            ) {
+              pos = "prev";
+            }
+
+            else if (
+              i === (fi + 1) % features.length
+            ) {
+              pos = "next";
+            }
+
 
             return (
+
               <div
                 key={i}
-                className={`card ${pos} ${zoom === i ? "zoom" : ""}`}
-                onClick={() => cardClick(i)}
+
+                className={`
+                  card
+                  ${pos}
+                  ${zoom === i ? "zoom" : ""}
+                `}
+
+                onClick={() => {
+                  cardClick(i)
+                }}
               >
+
 
                 <div
                   className="cardImg"
-                  style={{ backgroundImage: `url(${x.img})` }}
+
+                  style={{
+                    backgroundImage:
+                      `url(${x.img})`
+                  }}
                 ></div>
+
 
                 <div className="cardShade"></div>
 
+
                 <div className="cardText">
 
-                  <span className="icon">{x.icon}</span>
+                  <span className="icon">
+                    {x.icon}
+                  </span>
 
-                  <h2>{x.title}</h2>
+                  <h2>
+                    {x.title}
+                  </h2>
 
                   <div className="line"></div>
 
-                  <p>{x.text}</p>
+                  <p>
+                    {x.text}
+                  </p>
+
 
                   {i === fi &&
+
                     <small className="explore">
-                      {zoom === i ? "CLICK TO CLOSE" : "CLICK TO EXPLORE"}
+
+                      {
+                        zoom === i
+                          ? "CLICK TO CLOSE"
+                          : "CLICK TO EXPLORE"
+                      }
+
                     </small>
+
                   }
 
                 </div>
 
               </div>
+
             )
 
           })}
 
         </div>
 
-        <button className="arrow right" onClick={nextF}>›</button>
+
+        <button
+          className="arrow right"
+          onClick={nextF}
+        >
+          ›
+        </button>
+
 
         <Price />
 
-        <p className="copy">Copyright © 2025 Dell Inc.</p>
-        <p className="terms">*T&Cs apply</p>
+
+        <p className="copy">
+          Copyright © 2025 Dell Inc.
+        </p>
+
+        <p className="terms">
+          *T&Cs apply
+        </p>
 
       </section>
+
 
 
       {/* SECTION 3 */}
 
-      <section className={`products ${p.type === "offer" ? "light" : ""}`}>
+      <section
+        id="products"
+        className={`
+          products
+          ${p?.type === "offer" ? "light" : ""}
+        `}
+      >
 
-        <button className="arrow left" onClick={prevP}>‹</button>
 
-        <div key={pi} className={`product ${dir === "right" ? "fromRight" : "fromLeft"}`}>
+        {!p ? (
 
-          <div className="productImg">
-            <img src={p.img} alt={p.title} />
+          <div className="loading">
+            Loading products...
           </div>
 
-          <div className="productText">
+        ) : (
 
-            <h2>{p.title}</h2>
+          <>
 
-            <div className="productLine"></div>
+            <button
+              className="arrow left"
+              onClick={prevP}
+            >
+              ‹
+            </button>
 
-            <p>{p.sub}</p>
 
-            {p.model && <h3>{p.model}</h3>}
+            <div
+              key={pi}
 
-            <div className="productPrice">
-              {p.price}
+              className={`
+                product
+                ${dir === "right" ? "fromRight" : "fromLeft"}
+              `}
+            >
+
+
+              <div className="productImg">
+
+                <img
+                  src={images[p.image]}
+                  alt={p.title}
+                />
+
+              </div>
+
+
+
+              <div className="productText">
+
+
+                <h2>
+                  {p.title}
+                </h2>
+
+
+                <div className="productLine"></div>
+
+
+                <p>
+                  {p.sub}
+                </p>
+
+
+                {p.model &&
+
+                  <h3>
+                    {p.model}
+                  </h3>
+
+                }
+
+
+                <div className="productPrice">
+                  {p.price}
+                </div>
+
+
+                {p.emi &&
+
+                  <p className="emi">
+                    {p.emi}
+                  </p>
+
+                }
+
+
+                {p.type === "xps" &&
+
+                  <button className="know">
+                    KNOW MORE
+                  </button>
+
+                }
+
+
+              </div>
+
             </div>
 
-            {p.emi && <p className="emi">{p.emi}</p>}
 
-            {p.type === "xps" &&
-              <button className="know">KNOW MORE</button>
-            }
-
-          </div>
-
-        </div>
-
-        <button className="arrow right" onClick={nextP}>›</button>
+            <button
+              className="arrow right"
+              onClick={nextP}
+            >
+              ›
+            </button>
 
 
-        {/* slider dots */}
 
-        <div className="dots">
-          {products.map((x, i) =>
-            <span
-              key={i}
-              className={i === pi ? "dot selected" : "dot"}
-              onClick={() => {
-                setDir(i > pi ? "right" : "left");
-                setPi(i);
-              }}
-            ></span>
-          )}
-        </div>
+            {/* dots */}
 
-        <p className="copy">Copyright © 2025 Dell Inc.</p>
-        <p className="terms">*T&Cs apply</p>
+            <div className="dots">
+
+              {products.map((x, i) =>
+
+                <span
+                  key={i}
+
+                  className={
+                    i === pi
+                      ? "dot selected"
+                      : "dot"
+                  }
+
+                  onClick={() => {
+
+                    setDir(
+                      i > pi
+                        ? "right"
+                        : "left"
+                    );
+
+                    setPi(i);
+
+                  }}
+                ></span>
+
+              )}
+
+            </div>
+
+
+          </>
+
+        )}
+
+
+        <p className="copy">
+          Copyright © 2025 Dell Inc.
+        </p>
+
+        <p className="terms">
+          *T&Cs apply
+        </p>
 
       </section>
+      <ChatAssistant
+        onSelectProduct={selectProduct}
+      />
+
 
     </div>
   )
@@ -286,12 +586,25 @@ function App() {
 // price circle
 
 function Price() {
+
   return (
+
     <div className="price">
-      <small>Price</small>
-      <span>Starting from</span>
-      <b>₹56000*</b>
+
+      <small>
+        Price
+      </small>
+
+      <span>
+        Starting from
+      </span>
+
+      <b>
+        ₹56000*
+      </b>
+
     </div>
+
   )
 }
 

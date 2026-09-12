@@ -1,0 +1,320 @@
+.aiButton {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+
+    width: 58px;
+    height: 58px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #0672ce;
+    color: white;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    z-index: 9999;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, .25);
+
+    transition: .25s;
+}
+
+.aiButton:hover {
+    transform: scale(1.08);
+}
+
+
+.chatBox {
+    position: fixed;
+
+    right: 28px;
+    bottom: 100px;
+
+    width: 370px;
+    height: 520px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow:
+        0 15px 50px rgba(0, 0, 0, .3);
+
+    z-index: 9998;
+
+    animation: chatOpen .25s ease;
+}
+
+
+@keyframes chatOpen {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(20px) scale(.95);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0) scale(1);
+    }
+}
+
+
+.chatHeader {
+    background: #0672ce;
+    color: white;
+
+    padding: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.chatHeader h3 {
+    margin: 0;
+    font-size: 17px;
+}
+
+
+.chatHeader span {
+    font-size: 11px;
+    opacity: .8;
+}
+
+
+.chatHeader button {
+    border: none;
+    background: none;
+    color: white;
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+
+.chatMessages {
+    flex: 1;
+
+    padding: 16px;
+
+    overflow-y: auto;
+
+    background: #f5f7fa;
+}
+
+
+.chatMessage {
+    margin-bottom: 15px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.chatMessage.user {
+    align-items: flex-end;
+}
+
+
+.chatMessage.assistant {
+    align-items: flex-start;
+}
+
+
+.bubble {
+    max-width: 80%;
+
+    padding: 11px 14px;
+
+    border-radius: 14px;
+
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+
+.user .bubble {
+    background: #0672ce;
+    color: white;
+
+    border-bottom-right-radius: 4px;
+}
+
+
+.assistant .bubble {
+    background: white;
+    color: #222;
+
+    border-bottom-left-radius: 4px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, .08);
+}
+
+
+.thinking {
+    opacity: .6;
+}
+
+
+.recommendedProducts {
+    width: 90%;
+    margin-top: 8px;
+}
+
+
+.recommendedCard {
+    background: white;
+
+    border: 1px solid #ddd;
+    border-radius: 12px;
+
+    padding: 12px;
+
+    margin-top: 8px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, .06);
+}
+
+
+.recommendedCard span {
+    color: #0672ce;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.recommendedCard h4 {
+    margin: 5px 0;
+
+    font-size: 15px;
+    color: #111;
+}
+
+
+.recommendedCard p {
+    margin: 4px 0;
+
+    font-size: 12px;
+    color: #555;
+}
+
+
+.recommendedCard b {
+    display: block;
+
+    margin-top: 7px;
+
+    font-size: 14px;
+    color: #111;
+}
+
+
+.chatInput {
+    display: flex;
+
+    padding: 12px;
+
+    background: white;
+
+    border-top: 1px solid #ddd;
+}
+
+
+.chatInput input {
+    flex: 1;
+
+    border: 1px solid #ccc;
+    border-radius: 20px;
+
+    padding: 10px 14px;
+
+    outline: none;
+}
+
+
+.chatInput input:focus {
+    border-color: #0672ce;
+}
+
+
+.chatInput button {
+    margin-left: 8px;
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #0672ce;
+    color: white;
+
+    cursor: pointer;
+}
+
+
+.chatInput button:disabled {
+    opacity: .5;
+}
+
+
+@media(max-width:500px) {
+
+    .chatBox {
+        right: 10px;
+        bottom: 85px;
+
+        width: calc(100% - 20px);
+        height: 70vh;
+    }
+
+    .aiButton {
+        right: 18px;
+        bottom: 18px;
+    }
+}
+
+.viewProduct {
+    width: 100%;
+    margin-top: 10px;
+    padding: 9px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #0672ce;
+    color: white;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.viewProduct:hover {
+    transform: translateY(-1px);
+    opacity: .9;
+}

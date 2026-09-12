@@ -1233,3 +1233,8 @@ This removes those vertical side lines.
   }
 
 }
+
+.loading {
+  color: white;
+  font-size: 28px;
+}
