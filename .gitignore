@@ -36,11 +36,9 @@ venv/
 .venv/
 
 # --------------------
-# Local databases
+# Old local databases
 # --------------------
 backend/dell.db
-
-# Chroma vector database
 backend/chroma_db/
 
 # --------------------

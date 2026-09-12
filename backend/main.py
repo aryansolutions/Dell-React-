@@ -26,9 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
 
-GEMINI_API_KEY = os.getenv(
-    "GEMINI_API_KEY"
-)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 CHAT_MODEL = os.getenv(
     "CHAT_MODEL",
@@ -43,7 +41,7 @@ EMBED_MODEL = os.getenv(
 FRONTEND_URL = os.getenv(
     "FRONTEND_URL",
     ""
-)
+).rstrip("/")
 
 
 # =========================================================
@@ -58,11 +56,8 @@ gemini_client = genai.Client(
 def get_embedding(text):
 
     response = gemini_client.models.embed_content(
-
         model=EMBED_MODEL,
-
         contents=text,
-
         config=types.EmbedContentConfig(
             output_dimensionality=768
         )
@@ -109,19 +104,19 @@ app = FastAPI(
 
 allowed_origins = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173"
+    "http://127.0.0.1:5173",
+
+    # Production Vercel frontend
+    "https://dell-react.vercel.app"
 ]
 
 
-if FRONTEND_URL:
-
-    allowed_origins.append(
-        FRONTEND_URL
-    )
+# Add environment frontend URL too
+if FRONTEND_URL and FRONTEND_URL not in allowed_origins:
+    allowed_origins.append(FRONTEND_URL)
 
 
 app.add_middleware(
-
     CORSMiddleware,
 
     allow_origins=allowed_origins,
@@ -131,7 +126,6 @@ app.add_middleware(
     allow_methods=["*"],
 
     allow_headers=["*"]
-
 )
 
 
@@ -169,7 +163,7 @@ class ChatRequest(BaseModel):
 
 
 # =========================================================
-# CREATE PRODUCT TEXT FOR EMBEDDING
+# PRODUCT TEXT FOR EMBEDDING
 # =========================================================
 
 def product_to_text(product):
@@ -192,18 +186,22 @@ EMI: {product.emi or ""}
 def home():
 
     return {
+        "message": "Timeus AI backend is running",
+        "database": "PostgreSQL + pgvector",
+        "chat_model": CHAT_MODEL,
+        "embedding_model": EMBED_MODEL
+    }
 
-        "message":
-            "Timeus AI backend is running",
 
-        "database":
-            "PostgreSQL + pgvector",
+# =========================================================
+# HEALTH CHECK
+# =========================================================
 
-        "chat_model":
-            CHAT_MODEL,
+@app.get("/health")
+def health():
 
-        "embedding_model":
-            EMBED_MODEL
+    return {
+        "status": "ok"
     }
 
 
@@ -249,15 +247,11 @@ def get_products():
 
 # =========================================================
 # SEARCH PRODUCTS
-#
-# IMPORTANT:
-# Keep above /products/{product_id}
+# Keep before /products/{product_id}
 # =========================================================
 
 @app.get("/products/search/")
-def search_products(
-    q: str
-):
+def search_products(q: str):
 
     conn = get_connection()
 
@@ -288,12 +282,10 @@ def search_products(
         ORDER BY id
 
     """, (
-
         search,
         search,
         search,
         search
-
     ))
 
 
@@ -313,9 +305,7 @@ def search_products(
 # =========================================================
 
 @app.get("/products/{product_id}")
-def get_product(
-    product_id: int
-):
+def get_product(product_id: int):
 
     conn = get_connection()
 
@@ -338,9 +328,7 @@ def get_product(
         WHERE id=%s
 
     """, (
-
         product_id,
-
     ))
 
 
@@ -368,24 +356,14 @@ def get_product(
 # =========================================================
 
 @app.post("/products")
-def add_product(
-    product: Product
-):
+def add_product(product: Product):
 
-    # -----------------------------------
-    # Create embedding
-    # -----------------------------------
-
-    text = product_to_text(
-        product
-    )
+    text = product_to_text(product)
 
 
     try:
 
-        embedding = get_embedding(
-            text
-        )
+        embedding = get_embedding(text)
 
     except Exception as e:
 
@@ -394,10 +372,6 @@ def add_product(
             detail=f"Embedding failed: {e}"
         )
 
-
-    # -----------------------------------
-    # Save to PostgreSQL
-    # -----------------------------------
 
     conn = get_connection()
 
@@ -424,23 +398,14 @@ def add_product(
         RETURNING id
 
     """, (
-
         product.type,
-
         product.title,
-
         product.sub,
-
         product.model,
-
         product.price,
-
         product.emi,
-
         product.image,
-
         embedding
-
     ))
 
 
@@ -451,19 +416,14 @@ def add_product(
 
     conn.commit()
 
-
     cursor.close()
 
     conn.close()
 
 
     return {
-
-        "message":
-            "Product added",
-
-        "id":
-            new_id
+        "message": "Product added",
+        "id": new_id
     }
 
 
@@ -477,19 +437,12 @@ def update_product(
     product: Product
 ):
 
-    # New product information means
-    # embedding should also be regenerated.
-
-    text = product_to_text(
-        product
-    )
+    text = product_to_text(product)
 
 
     try:
 
-        embedding = get_embedding(
-            text
-        )
+        embedding = get_embedding(text)
 
     except Exception as e:
 
@@ -520,25 +473,15 @@ def update_product(
         WHERE id=%s
 
     """, (
-
         product.type,
-
         product.title,
-
         product.sub,
-
         product.model,
-
         product.price,
-
         product.emi,
-
         product.image,
-
         embedding,
-
         product_id
-
     ))
 
 
@@ -546,7 +489,6 @@ def update_product(
 
 
     conn.commit()
-
 
     cursor.close()
 
@@ -562,9 +504,7 @@ def update_product(
 
 
     return {
-
-        "message":
-            "Product updated"
+        "message": "Product updated"
     }
 
 
@@ -573,9 +513,7 @@ def update_product(
 # =========================================================
 
 @app.delete("/products/{product_id}")
-def delete_product(
-    product_id: int
-):
+def delete_product(product_id: int):
 
     conn = get_connection()
 
@@ -586,9 +524,7 @@ def delete_product(
         DELETE FROM products
         WHERE id=%s
     """, (
-
         product_id,
-
     ))
 
 
@@ -596,7 +532,6 @@ def delete_product(
 
 
     conn.commit()
-
 
     cursor.close()
 
@@ -612,23 +547,44 @@ def delete_product(
 
 
     return {
-
-        "message":
-            "Product deleted"
+        "message": "Product deleted"
     }
 
 
 # =========================================================
 # NORMAL PRODUCT CHAT
-#
-# Sends ALL products to Gemini.
-# Useful for comparing normal prompting vs RAG.
+# Sends all products to Gemini
 # =========================================================
 
 @app.post("/product-chat")
-def product_chat(
-    data: ChatRequest
-):
+def product_chat(data: ChatRequest):
+
+    message = data.message.strip()
+
+
+    if not message:
+
+        raise HTTPException(
+            status_code=400,
+            detail="Message cannot be empty"
+        )
+
+
+    # Simple greetings should not trigger product recommendations
+    if message.lower() in {
+        "hi",
+        "hello",
+        "hey",
+        "hii",
+        "hiii",
+        "hello there"
+    }:
+
+        return {
+            "response":
+                "Hi! What kind of Dell product are you looking for?"
+        }
+
 
     conn = get_connection()
 
@@ -680,61 +636,55 @@ EMI: {product["emi"]}
 You are a concise Dell shopping assistant.
 
 Rules:
-- Keep replies very short: usually 1-3 sentences.
-- If the user only says hello/hi/hey, greet them and ask what they are looking for.
-- Do NOT recommend a product unless the user asks for a recommendation or gives a need.
-- Do NOT mention "retrieved products", "context", "available items", or internal system details.
-- Do NOT say things like "model not specified".
-- Do NOT repeat unnecessary information.
-- Do NOT use long bullet lists unless the user explicitly asks for options.
-- If recommending a product, mention only:
-  product name, price, and one short reason.
-- If the request is vague, ask one short follow-up question.
-- Only use products provided in the context.
-- Never invent product details.
+- Reply naturally.
+- Keep replies to 1-3 short sentences.
+- Do not recommend anything unless the user asks for a product or describes a need.
+- Do not mention context, retrieval, database, embeddings or internal systems.
+- Do not invent specifications.
+- Do not invent products.
+- Do not say "model not specified".
+- If the question is vague, ask one short follow-up question.
+- When recommending a product, mention its name, price and one short reason.
+- Only use information given below.
 
-Product context:
+PRODUCTS:
+
 {context}
 
-User:
+USER:
+
 {message}
 
-Reply naturally and concisely.
+ANSWER:
 """
 
 
-    ai_response = ask_gemini(
-        prompt
-    )
+    ai_response = ask_gemini(prompt)
 
 
     return {
-
-        "response":
-            ai_response
+        "response": ai_response
     }
 
 
 # =========================================================
 # RAG CHAT
 #
-# Question
+# User question
 #      ↓
 # Gemini embedding
 #      ↓
-# PostgreSQL pgvector
+# PostgreSQL + pgvector
 #      ↓
-# Top products
+# Relevant products
 #      ↓
 # Gemini
 #      ↓
-# Answer
+# React
 # =========================================================
 
 @app.post("/rag-chat")
-def rag_chat(
-    data: ChatRequest
-):
+def rag_chat(data: ChatRequest):
 
     message = data.message.strip()
 
@@ -747,15 +697,36 @@ def rag_chat(
         )
 
 
-    # -----------------------------------
+    # -----------------------------------------------------
+    # Handle greetings WITHOUT running vector search
+    # -----------------------------------------------------
+
+    if message.lower() in {
+        "hi",
+        "hello",
+        "hey",
+        "hii",
+        "hiii",
+        "hello there"
+    }:
+
+        return {
+            "response":
+                "Hi! What kind of Dell product are you looking for?",
+
+            "products": [],
+
+            "retrieved_products": []
+        }
+
+
+    # -----------------------------------------------------
     # 1. Embed user question
-    # -----------------------------------
+    # -----------------------------------------------------
 
     try:
 
-        question_embedding = get_embedding(
-            message
-        )
+        question_embedding = get_embedding(message)
 
     except Exception as e:
 
@@ -765,9 +736,9 @@ def rag_chat(
         )
 
 
-    # -----------------------------------
-    # 2. pgvector similarity search
-    # -----------------------------------
+    # -----------------------------------------------------
+    # 2. pgvector semantic search
+    # -----------------------------------------------------
 
     try:
 
@@ -787,18 +758,18 @@ def rag_chat(
     if not products:
 
         return {
-
             "response":
                 "I couldn't find a matching product.",
 
-            "retrieved_products":
-                []
+            "products": [],
+
+            "retrieved_products": []
         }
 
 
-    # -----------------------------------
-    # 3. Build context
-    # -----------------------------------
+    # -----------------------------------------------------
+    # 3. Build Gemini context
+    # -----------------------------------------------------
 
     context = ""
 
@@ -816,53 +787,49 @@ EMI: {product["emi"]}
 """
 
 
-    # -----------------------------------
+    # -----------------------------------------------------
     # 4. Ask Gemini
-    # -----------------------------------
+    # -----------------------------------------------------
 
     prompt = f"""
-You are an AI shopping assistant.
+You are a concise Dell shopping assistant.
 
-A semantic vector search has already
-retrieved the most relevant products.
+Use ONLY the products supplied below.
 
-Use ONLY the products below.
-
-RETRIEVED PRODUCTS:
+PRODUCTS:
 
 {context}
 
-USER QUESTION:
+USER:
 
 {message}
 
 RULES:
 
-1. Recommend the best matching product.
+- Answer in 1-3 short sentences.
+- Be natural and direct.
+- Never mention vector search, retrieval, context, embeddings or database.
+- Never invent products.
+- Never invent specifications.
+- If one product clearly matches, recommend only that product.
+- Mention price only when useful.
+- Give one short reason for the recommendation.
+- If neither product really satisfies the request, say that briefly.
+- Do not create unnecessary bullet lists.
+- Do not repeat the user's question.
+- Do not use phrases like "based on the retrieved products".
+- Do not say "model not specified".
 
-2. Do not invent products.
-
-3. Do not invent specifications.
-
-4. Explain briefly why it matches.
-
-5. Mention model and price when available.
-
-6. If the products do not actually satisfy
-the user's request, say so clearly.
-
-7. Keep the response concise and natural.
+ANSWER:
 """
 
 
-    ai_response = ask_gemini(
-        prompt
-    )
+    ai_response = ask_gemini(prompt)
 
 
-    # -----------------------------------
+    # -----------------------------------------------------
     # 5. Format products for React
-    # -----------------------------------
+    # -----------------------------------------------------
 
     retrieved_products = []
 
@@ -888,18 +855,25 @@ the user's request, say so clearly.
 
             "distance":
                 round(
-                    float(
-                        product["distance"]
-                    ),
+                    float(product["distance"]),
                     4
                 )
         })
 
 
+    # IMPORTANT:
+    # React currently reads data.products
+    #
+    # retrieved_products is also returned so Swagger/API
+    # still clearly shows what RAG retrieved.
+
     return {
 
         "response":
             ai_response,
+
+        "products":
+            retrieved_products,
 
         "retrieved_products":
             retrieved_products
